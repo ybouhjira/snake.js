@@ -89,7 +89,7 @@ function update(){
 		if(lastPoint.count > 1)
 			lastPoint.count--;
 		else
-			snake.points.splice(snake.points.length-1,1);
+			snake.points.pop();
 	}
 
 	// head
@@ -110,25 +110,41 @@ function update(){
 		snake.headCount++;
 	}
 }
+
 window.addEventListener('keydown',function(e){
 	var key = String.fromCharCode(e.keyCode);
+	var direction = '', vx=0, vy=0;
 	switch(key){
 		case 'Z':
-			snake.direction = 'up';
+			direction = 'up';
+			vy = -1;
 			break;
 		case 'S':
-			snake.direction = 'down';
+			direction = 'down';
+			vy = +1;
 			break;
 		case 'Q':
-			snake.direction = 'left';
+			direction = 'left';
+			vx = -1;
 			break;
 		case 'D':
-			snake.direction = 'right';
+			direction = 'right';
+			vx = +1;
 	}
+
+	if(direction != snake.direction){
+		snake.points.unshift(new SnakePoint(snake.direction, snake.headCount+1));
+		snake.headCount = 0;
+		snake.direction = direction ;
+		//snake.headX += vx ;
+		//snake.headY += vy ;	
+	}
+	
 });
+
 var exec = function(){
 	update();
 	draw();
-	setTimeout(exec,100);
+	setTimeout(exec,50);
 }
-setTimeout(exec,100);
+setTimeout(exec,50);
