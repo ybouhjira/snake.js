@@ -3,8 +3,17 @@ function drawFood(){
 	ctx.save();
 	ctx.fillStyle = "#fa0";
 	ctx.beginPath();
-	var x = parseInt(Math.random() * game.vCount) * game.cellW + game.cellW / 2;
-	var y = parseInt(Math.random() * game.hCount) * game.cellH + game.cellH / 2;
+	var x,y;
+	if(food.eaten){
+		x = parseInt(Math.random() * game.vCount) * game.cellW + game.cellW / 2;
+		y = parseInt(Math.random() * game.hCount) * game.cellH + game.cellH / 2;
+		food.x = (x - game.cellW/2 ) / game.cellW  ;
+		food.y = (y - game.cellH/2 ) / game.cellH  ;
+		food.eaten = false ;
+	}else{
+		x = food.x * game.cellW + game.cellW / 2 ;
+		y = food.y * game.cellH + game.cellH / 2 ;
+	}
 	var radius = game.cellW / 2 ;
 	ctx.arc(x,y, radius, 0, Math.PI*2);
 	ctx.stroke();
@@ -19,7 +28,7 @@ function drawSnakePiece(x,y){
 	ctx.strokeStyle = '#05e';
 	ctx.beginPath();
 	var realX = parseInt(game.cellW*x) ;
-	var realY = parseInt(game.cellH*y);
+	var realY = parseInt(game.cellH*y) ;
 	ctx.rect(realX, realY, game.cellW, game.cellH);
 	ctx.fill();
 	ctx.stroke();
@@ -75,11 +84,15 @@ function drawSnake(){
 // Draws the hole game after update
 function draw(){
 	ctx.clearRect(0,0,game.width,game.height);
-	if(game.foodEaten){
-		drawFood();
-		game.foodEaten = false ;
-	}
+	drawFood();
 	drawSnake();
+
+	if(game.paused){
+		ctx.font = "100px Arial";
+		ctx.fillStyle = 'rgba(255,255,255,0.5)';
+		var txtWidth = ctx.measureText("PAUSE").width ; 
+		ctx.fillText("PAUSE",game.width/2 - txtWidth/2,game.height/2+34);
+	}
 }
 
 function update(){
@@ -109,11 +122,21 @@ function update(){
 	if(snake.points.length > 0){
 		snake.headCount++;
 	}
+
+	// check if the snake will eat the food
+	if(snake.headX == food.x && snake.headY == food.y ){
+		food.eaten = true ;
+		if(snake.points.length > 0)
+			snake.points[snake.points.length-1].count += 1;
+		else
+			snake.headCount += 1;
+	}
 }
 
-window.addEventListener('keydown',function(e){
+var keyboardInputHandler = function(e){
 	var key = String.fromCharCode(e.keyCode);
-	var direction = '', vx=0, vy=0;
+	var direction = snake.direction, vx=0, vy=0;
+
 	switch(key){
 		case 'Z':
 			direction = 'up';
@@ -130,21 +153,43 @@ window.addEventListener('keydown',function(e){
 		case 'D':
 			direction = 'right';
 			vx = +1;
+			break;
+		case 'P':
+			game.paused = (game.paused)? false:true ;
+			if(!game.paused)
+				exec();
+			break;
 	}
+	if(!(  (direction == 'up' && snake.direction == 'down')
+		||(direction == 'down' && snake.direction == 'up')
+		||(direction == 'left' && snake.direction == 'right')
+		||(direction == 'right' && snake.direction == 'left')
+		)){
 
-	if(direction != snake.direction){
-		snake.points.unshift(new SnakePoint(snake.direction, snake.headCount+1));
-		snake.headCount = 0;
-		snake.direction = direction ;
-		//snake.headX += vx ;
-		//snake.headY += vy ;	
+		if(direction != snake.direction){
+			snake.points.unshift(new SnakePoint(snake.direction, snake.headCount+1));
+			snake.headCount = 0;
+			snake.direction = direction ;
+			if(snake.points.length > 1){
+				if(snake.points[snake.points.length-1].count == 1)
+					snake.points.pop();
+				else
+					snake.points[snake.points.length-1].count--;
+			}
+		}
+
+		// Remove the event listener so that the user can't chang direction two
+		// time between 2 frames
+		if(!game.paused)
+			window.removeEventListener('keydown',keyboardInputHandler);
 	}
-	
-});
+}
 
 var exec = function(){
 	update();
 	draw();
-	setTimeout(exec,50);
+	window.addEventListener('keydown',keyboardInputHandler);
+	if(!game.paused)
+		setTimeout(exec,60);
 }
-setTimeout(exec,50);
+setTimeout(exec,60);

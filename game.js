@@ -7,7 +7,7 @@ var game = {
 	height: canvas.getAttribute("height"),
 	vCount: 80,
 	hCount: 60,
-	foodEaten: true
+	paused: false
 }
 game.cellW =  game.width / game.vCount;
 game.cellH = game.height / game.hCount;
