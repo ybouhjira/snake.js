@@ -5,8 +5,8 @@ function drawFood(){
 	ctx.beginPath();
 	var x,y;
 	if(food.eaten){
-		x = parseInt(Math.random() * game.vCount) * game.cellW + game.cellW / 2;
-		y = parseInt(Math.random() * game.hCount) * game.cellH + game.cellH / 2;
+		x = parseInt(Math.random() * game.hCount) * game.cellW + game.cellW / 2;
+		y = parseInt(Math.random() * game.vCount) * game.cellH + game.cellH / 2;
 		food.x = (x - game.cellW/2 ) / game.cellW  ;
 		food.y = (y - game.cellH/2 ) / game.cellH  ;
 		food.eaten = false ;
@@ -186,6 +186,17 @@ var keyboardInputHandler = function(e){
 }
 
 var exec = function(){
+	if(lost()){
+		
+		ctx.font = "100px Arial";
+		ctx.fillStyle = 'rgba(255,255,255,0.5)';
+		var txtWidth = ctx.measureText("GAME OVER").width ; 
+		ctx.fillText("GAME OVER",game.width/2 - txtWidth/2,game.height/2+34);
+		
+		game.paused = true;
+		window.removeEventListener('keydown',keyboardInputHandler);
+		return;
+	}
 	update();
 	draw();
 	window.addEventListener('keydown',keyboardInputHandler);
