@@ -142,11 +142,11 @@ function update(){
 	// check if the snake will eat the food
 	if(snake.headX == food.x && snake.headY == food.y ){
 		food.eaten = true ;
-		game.score++;
+		game.score += game.scoreIncrement;
 		if(snake.points.length > 0)
-			snake.points[snake.points.length-1].count += 1;
+			snake.points[snake.points.length-1].count += game.sizeIncrement;
 		else
-			snake.headCount += 1;
+			snake.headCount += game.sizeIncrement;
 	}
 }
 
@@ -195,7 +195,7 @@ var keyboardInputHandler = function(e){
 			}
 		}
 
-		// Remove the event listener so that the user can't chang direction two
+		// Remove the event listener so that the user can't change direction two
 		// time between 2 frames
 		if(!game.paused)
 			window.removeEventListener('keydown',keyboardInputHandler);
@@ -208,17 +208,22 @@ function writeGameOver(){
 	var txtWidth = ctx.measureText("GAME OVER").width ; 
 	ctx.fillText("GAME OVER",game.width/2 - txtWidth/2,game.height/2+34);
 }
+
 var exec = function(){
-	if(lost()){
-		writeGameOver();
-		game.paused = true;
-		window.removeEventListener('keydown',keyboardInputHandler);
-		return;
+	if(!game.started)
+		displayStartScreen();
+	else{
+		if(lost()){
+			writeGameOver();
+			game.paused = true;
+			window.removeEventListener('keydown',keyboardInputHandler);
+			return;
+		}
+		update();
+		draw();
+		window.addEventListener('keydown',keyboardInputHandler);
+		if(!game.paused)
+			setTimeout(exec,game.timeBetweenFrames);
 	}
-	update();
-	draw();
-	window.addEventListener('keydown',keyboardInputHandler);
-	if(!game.paused)
-		setTimeout(exec,60);
 }
-setTimeout(exec,60);
+setTimeout(exec,game.timeBetweenFrames);

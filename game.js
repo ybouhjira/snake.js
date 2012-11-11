@@ -8,16 +8,20 @@ var game = {
 	vCount: 30,
 	hCount: 40,
 	paused: false,
-	score: 0
+	score: 0,
+	timeBetweenFrames: 60,
+	sizeIncrement: 5,
+	scoreIncrement: 3,
+	started: false
 };
 game.cellW = game.width / game.hCount;
 game.cellH = game.height / game.vCount;
 
 // Check if the player have lost
 function lost(){
-	if(snake.headX == game.hCount && snake.direction == 'right'
+	if(snake.headX == game.hCount-1 && snake.direction == 'right'
 	||snake.headX == 0 && snake.direction == 'left'
-	||snake.headY == game.vCount && snake.direction == 'down'
+	||snake.headY == game.vCount-1 && snake.direction == 'down'
 	||snake.headY == 0 && snake.direction == 'up'
 	){
 		return true;
