@@ -81,18 +81,34 @@ function drawSnake(){
 	}
 }
 
+function writePause(){
+	ctx.font = "100px Arial";
+	ctx.fillStyle = 'rgba(255,255,255,0.5)';
+	var txtWidth = ctx.measureText("PAUSE").width ; 
+	ctx.fillText("PAUSE",game.width/2 - txtWidth/2,game.height/2+34);
+}
+
+function cleanCanvas(){
+	ctx.clearRect(0,0,game.width,game.height);
+}
+function writeScore(){
+	var text = "score : "+game.score ;
+	ctx.save();
+	ctx.fillStyle = 'rgba(255,255,255,0.5)';
+	ctx.font = "20px Arial";
+	var txtWidth = ctx.measureText(text).width ;
+	ctx.fillText (text, game.width/2 - txtWidth/2, game.height - game.cellH );
+	ctx.restore(); 
+}
+
 // Draws the hole game after update
 function draw(){
-	ctx.clearRect(0,0,game.width,game.height);
-	drawFood();
+	cleanCanvas();
 	drawSnake();
-
-	if(game.paused){
-		ctx.font = "100px Arial";
-		ctx.fillStyle = 'rgba(255,255,255,0.5)';
-		var txtWidth = ctx.measureText("PAUSE").width ; 
-		ctx.fillText("PAUSE",game.width/2 - txtWidth/2,game.height/2+34);
-	}
+	drawFood();
+	if(game.paused)
+		writePause();
+	writeScore();	
 }
 
 function update(){
@@ -126,6 +142,7 @@ function update(){
 	// check if the snake will eat the food
 	if(snake.headX == food.x && snake.headY == food.y ){
 		food.eaten = true ;
+		game.score++;
 		if(snake.points.length > 0)
 			snake.points[snake.points.length-1].count += 1;
 		else
@@ -185,14 +202,15 @@ var keyboardInputHandler = function(e){
 	}
 }
 
+function writeGameOver(){
+	ctx.font = "100px Arial";
+	ctx.fillStyle = 'rgba(255,255,255,0.5)';
+	var txtWidth = ctx.measureText("GAME OVER").width ; 
+	ctx.fillText("GAME OVER",game.width/2 - txtWidth/2,game.height/2+34);
+}
 var exec = function(){
 	if(lost()){
-		
-		ctx.font = "100px Arial";
-		ctx.fillStyle = 'rgba(255,255,255,0.5)';
-		var txtWidth = ctx.measureText("GAME OVER").width ; 
-		ctx.fillText("GAME OVER",game.width/2 - txtWidth/2,game.height/2+34);
-		
+		writeGameOver();
 		game.paused = true;
 		window.removeEventListener('keydown',keyboardInputHandler);
 		return;

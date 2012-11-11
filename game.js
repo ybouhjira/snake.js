@@ -5,9 +5,10 @@ var ctx = canvas.getContext("2d");
 var game = {
 	width: canvas.getAttribute("width"),
 	height: canvas.getAttribute("height"),
-	vCount: 60,
-	hCount: 80,
-	paused: false
+	vCount: 30,
+	hCount: 40,
+	paused: false,
+	score: 0
 };
 game.cellW = game.width / game.hCount;
 game.cellH = game.height / game.vCount;
