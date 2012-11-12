@@ -92,7 +92,7 @@ function cleanCanvas(){
 	ctx.clearRect(0,0,game.width,game.height);
 }
 function writeScore(){
-	var text = "score : "+game.score ;
+	var text = "Score : "+game.score ;
 	ctx.save();
 	ctx.fillStyle = 'rgba(255,255,255,0.5)';
 	ctx.font = "20px Arial";
@@ -151,27 +151,26 @@ function update(){
 }
 
 var keyboardInputHandler = function(e){
-	var key = String.fromCharCode(e.keyCode);
 	var direction = snake.direction, vx=0, vy=0;
 
-	switch(key){
-		case 'Z':
+	switch(e.keyCode){
+		case arrowKeys.up:
 			direction = 'up';
 			vy = -1;
 			break;
-		case 'S':
+		case arrowKeys.down:
 			direction = 'down';
 			vy = +1;
 			break;
-		case 'Q':
+		case arrowKeys.left:
 			direction = 'left';
 			vx = -1;
 			break;
-		case 'D':
+		case arrowKeys.right:
 			direction = 'right';
 			vx = +1;
 			break;
-		case 'P':
+		case 'P'.charCodeAt(0) :
 			game.paused = (game.paused)? false:true ;
 			if(!game.paused)
 				exec();
@@ -214,9 +213,9 @@ var exec = function(){
 		displayStartScreen();
 	else{
 		if(lost()){
-			writeGameOver();
 			game.paused = true;
 			window.removeEventListener('keydown',keyboardInputHandler);
+			writeGameOver();
 			return;
 		}
 		update();

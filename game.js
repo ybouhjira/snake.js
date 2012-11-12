@@ -17,6 +17,13 @@ var game = {
 game.cellW = game.width / game.hCount;
 game.cellH = game.height / game.vCount;
 
+
+var arrowKeys = {
+	left: 37,
+	up: 38,
+	right: 39,
+	down: 40
+}
 // Check if the player have lost
 function lost(){
 	if(snake.headX == game.hCount-1 && snake.direction == 'right'

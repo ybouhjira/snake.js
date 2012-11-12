@@ -50,9 +50,9 @@ Button.prototype.containsPoint = function(px,py){
 
 // start buttons :
 var buttons = [] ;
-buttons['easy'] =  new Button(game.width/2 , game.height/2, "  Easy  ",'#05a') ;
-buttons['medium'] = new Button(game.width/2 , game.height/2 + 100, " Medium ",'#05a');
-buttons['hard'] = new Button(game.width/2 , game.height/2 + 200, "  Hard  ",'#05a');
+buttons['easy'] =  new Button(game.width/2-20 , game.height/2-20, "  Easy  ",'#05a') ;
+buttons['medium'] = new Button(game.width/2-20 , game.height/2 + 80, " Medium ",'#05a');
+buttons['hard'] = new Button(game.width/2-20 , game.height/2 + 180, "  Hard  ",'#05a');
 
 function writeGameTitle(){
     ctx.save();
@@ -64,7 +64,7 @@ function writeGameTitle(){
     ctx.shadowColor = '#fc0';
     ctx.font = "100px Arial";
     var txtWidth = ctx.measureText("GAME OVER").width ; 
-    ctx.fillText("Snake Game", game.width/2 - txtWidth/2, game.height/4 + 50);
+    ctx.fillText("Snake Game", game.width/2 - txtWidth/2-20, game.height/4-20 + 50);
     ctx.restore();
 }
 
@@ -120,14 +120,10 @@ var clickHandler = function(e){
     exec();
 }
 
-
-
 function displayStartScreen(){
     writeGameTitle();
-
     for( i in buttons)
         buttons[i].draw();
-
     canvas.addEventListener("mousemove",mouseMoveHandler);
     canvas.addEventListener("click",clickHandler);
 }
